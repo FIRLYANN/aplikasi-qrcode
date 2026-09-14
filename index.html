@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRGen Pro - Pembuat QR Code Modern & Canggih</title>
+    <meta name="description" content="Generate QR codes easily with custom colors, logos, and high-quality exports. The most powerful QR generator for your business.">
+    <meta name="keywords" content="qr code generator, qr creator, custom qr code, professional qr, business qr">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="QRGen Pro - Modern QR Generator">
+    <meta property="og:description" content="Create professional and high-quality QR codes in seconds.">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter -->
+    <meta name="twitter:title" content="QRGen Pro - Modern QR Generator">
+    <meta name="twitter:description" content="Create professional and high-quality QR codes in seconds.">
+
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+    <!-- QR Code Library -->
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+
+    <style type="text/tailwindcss">
+    @layer theme {
+        :root {
+            --primary-color: #ffffff;
+            --primary-hover: #e5e5e5;
+            --secondary-color: #a3a3a3;
+            --bg-main: #0a0a0a;
+            --card-bg: #121212;
+            --border-color: #262626;
+        }
+    }
+
+    @layer base {
+        body {
+            @apply bg-[var(--bg-main)] text-white font-sans antialiased;
+        }
+    }
+
+    @layer components {
+        .btn-primary {
+            @apply px-6 py-2.5 bg-white text-black border border-white rounded-none font-bold transition-all hover:bg-black hover:text-white active:scale-95 flex items-center justify-center gap-2;
+        }
+        .btn-secondary {
+            @apply px-6 py-2.5 bg-transparent border border-white text-white rounded-none font-bold transition-all hover:bg-white hover:text-black active:scale-95 flex items-center justify-center gap-2;
+        }
+        .card {
+            @apply bg-[var(--card-bg)] border border-[var(--border-color)] rounded-none p-6;
+        }
+        .input-field {
+            @apply w-full px-4 py-3 rounded-none border border-[var(--border-color)] focus:ring-0 focus:border-white outline-none transition-all bg-black text-white;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" src="components/Header.js"></script>
+    <script type="text/babel" src="components/QRGenerator.js"></script>
+    <script type="text/babel" src="components/Footer.js"></script>
+    <script type="text/babel" src="app.js"></script>
+</body>
+</html>
