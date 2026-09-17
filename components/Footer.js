@@ -1,9 +1,9 @@
 function Footer() {
     return (
         <footer className="bg-black border-t border-[var(--border-color)] py-12" data-name="footer" data-file="components/Footer.js">
-            <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-3">
+            <div className="container mx-auto max-w-6xl px-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-8">
+                    <div className="flex items-center justify-center md:justify-start gap-3">
                         <div className="w-8 h-8 bg-white flex items-center justify-center">
                             <div className="icon-qr-code text-black text-base"></div>
                         </div>
@@ -12,15 +12,18 @@ function Footer() {
                         </span>
                     </div>
                     
-                    <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-white/50">
+                    <div className="flex justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-white/50">
                         <a href="#" className="hover:text-white transition-colors">Privacy</a>
                         <a href="#" className="hover:text-white transition-colors">Terms</a>
                         <a href="#" className="hover:text-white transition-colors">Contact</a>
                     </div>
                     
-                    <div className="text-[10px] font-black uppercase tracking-widest text-white/20">
+                    <div className="text-center md:text-right text-[10px] font-black uppercase tracking-widest text-white/20">
                         &copy; 2026 QRGen Pro. Dark Brutalist Design.
                     </div>
+                </div>
+                <div className="mt-8 pt-6 border-t border-white/10 text-center text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
+                    CREATED BY FIRLYAN PRIYOKO 2K26
                 </div>
             </div>
         </footer>
