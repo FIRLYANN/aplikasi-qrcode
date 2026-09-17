@@ -8,6 +8,8 @@ function QRGenerator() {
     const [wifiName, setWifiName] = React.useState('');
     const [wifiPass, setWifiPass] = React.useState('');
     const [wifiSec, setWifiSec] = React.useState('WPA');
+    const [logoUrl, setLogoUrl] = React.useState('');
+    const [bottomText, setBottomText] = React.useState('');
     const canvasRef = React.useRef(null);
 
     const generateQR = React.useCallback(async () => {
@@ -27,7 +29,8 @@ function QRGenerator() {
                 return;
             }
 
-            await window.QRCode.toCanvas(canvasRef.current, content, {
+            const qrCanvas = document.createElement('canvas');
+            await window.QRCode.toCanvas(qrCanvas, content, {
                 width: size,
                 margin: 2,
                 color: {
@@ -36,10 +39,48 @@ function QRGenerator() {
                 },
                 errorCorrectionLevel: errorLevel
             });
+
+            const textHeight = bottomText.trim() ? Math.max(48, Math.round(size * 0.16)) : 0;
+            const canvas = canvasRef.current;
+            canvas.width = size;
+            canvas.height = size + textHeight;
+            const context = canvas.getContext('2d');
+            context.fillStyle = bgColor;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(qrCanvas, 0, 0);
+
+            if (logoUrl) {
+                await new Promise((resolve) => {
+                    const logo = new Image();
+                    logo.onload = () => {
+                        const logoSize = Math.round(size * 0.2);
+                        const logoX = (size - logoSize) / 2;
+                        const logoY = (size - logoSize) / 2;
+                        const padding = Math.max(6, Math.round(size * 0.02));
+
+                        context.fillStyle = '#ffffff';
+                        context.fillRect(logoX - padding, logoY - padding, logoSize + padding * 2, logoSize + padding * 2);
+                        context.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                        resolve();
+                    };
+                    logo.onerror = resolve;
+                    logo.src = logoUrl;
+                });
+            }
+
+            if (textHeight) {
+                context.fillStyle = bgColor;
+                context.fillRect(0, size, canvas.width, textHeight);
+                context.fillStyle = qrColor;
+                context.font = `bold ${Math.max(14, Math.round(size * 0.045))}px sans-serif`;
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillText(bottomText.trim(), size / 2, size + textHeight / 2, size - 24);
+            }
         } catch (err) {
             console.error('QR Generation failed:', err);
         }
-    }, [inputValue, qrColor, bgColor, size, errorLevel, type, wifiName, wifiPass, wifiSec]);
+    }, [inputValue, qrColor, bgColor, size, errorLevel, type, wifiName, wifiPass, wifiSec, logoUrl, bottomText]);
 
     React.useEffect(() => {
         generateQR();
@@ -194,6 +235,29 @@ function QRGenerator() {
                                 <option value="Q">Quartile (25%)</option>
                                 <option value="H">High (30%)</option>
                             </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-black uppercase tracking-tighter mb-2">Logo Tengah</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    setLogoUrl(file ? URL.createObjectURL(file) : '');
+                                }}
+                                className="input-field text-xs"
+                            />
+                        </div>
+                        <div className="col-span-2">
+                            <label className="block text-xs font-black uppercase tracking-tighter mb-2">Bottom Text</label>
+                            <input
+                                type="text"
+                                value={bottomText}
+                                onChange={(e) => setBottomText(e.target.value)}
+                                placeholder="Teks di bawah QR (opsional)"
+                                maxLength="60"
+                                className="input-field"
+                            />
                         </div>
                     </div>
                 </div>
