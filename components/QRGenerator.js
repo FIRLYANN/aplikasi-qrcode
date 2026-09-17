@@ -12,11 +12,13 @@ function QRGenerator() {
     const [logoSizePercent, setLogoSizePercent] = React.useState(20);
     const [bottomText, setBottomText] = React.useState('');
     const [copyStatus, setCopyStatus] = React.useState('');
+    const [generationStatus, setGenerationStatus] = React.useState('Menyiapkan QR...');
     const canvasRef = React.useRef(null);
     const logoInputRef = React.useRef(null);
 
     const generateQR = React.useCallback(async () => {
         try {
+            setGenerationStatus('Membuat QR...');
             let content = inputValue;
             
             if (type === 'wifi') {
@@ -25,7 +27,10 @@ function QRGenerator() {
                 content = `mailto:${inputValue}`;
             }
 
-            if (!content) return;
+            if (!content) {
+                setGenerationStatus('Masukkan konten untuk mulai');
+                return;
+            }
             
             if (typeof window.QRCode === 'undefined') {
                 console.error('Pustaka QRCode belum dimuat.');
@@ -136,7 +141,9 @@ function QRGenerator() {
                 context.textBaseline = 'middle';
                 context.fillText(bottomText.trim(), renderSize / 2, renderSize + textHeight / 2, renderSize - 24 * renderScale);
             }
+            setGenerationStatus('QR siap digunakan');
         } catch (err) {
+            setGenerationStatus('Gagal membuat QR');
             console.error('QR Generation failed:', err);
         }
     }, [inputValue, qrColor, bgColor, size, errorLevel, type, wifiName, wifiPass, wifiSec, logoUrl, logoSizePercent, bottomText]);
@@ -178,6 +185,19 @@ function QRGenerator() {
         if (logoInputRef.current) logoInputRef.current.value = '';
     };
 
+    const applyStylePreset = (preset) => {
+        if (preset === 'classic') {
+            setQrColor('#ffffff');
+            setBgColor('#000000');
+        } else if (preset === 'paper') {
+            setQrColor('#111111');
+            setBgColor('#f5f5f0');
+        } else if (preset === 'signal') {
+            setQrColor('#facc15');
+            setBgColor('#111111');
+        }
+    };
+
     return (
         <div className="grid lg:grid-cols-5 gap-8" data-name="qr-generator" data-file="components/QRGenerator.js">
             <div className="lg:col-span-3 space-y-6">
@@ -214,6 +234,10 @@ function QRGenerator() {
                                     placeholder={type === 'email' ? 'contoh@domain.com' : 'Ketik di sini...'}
                                     className="input-field"
                                 />
+                                <div className="flex justify-between mt-2 text-[10px] uppercase font-bold tracking-widest text-white/30">
+                                    <span>{type === 'email' ? 'Format email' : 'Preview live'}</span>
+                                    <span>{inputValue.length} karakter</span>
+                                </div>
                             </div>
                         ) : (
                             <div className="grid md:grid-cols-2 gap-4">
@@ -260,6 +284,32 @@ function QRGenerator() {
                         Desain & Gaya
                     </h2>
                     <div className="grid md:grid-cols-2 gap-8">
+                        <div className="col-span-2">
+                            <label className="block text-xs font-black uppercase tracking-tighter mb-2">Preset Gaya Cepat</label>
+                            <div className="grid grid-cols-3 gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => applyStylePreset('classic')}
+                                    className="border border-white/30 px-3 py-3 text-[10px] font-black uppercase tracking-widest hover:border-white hover:bg-white hover:text-black transition-all"
+                                >
+                                    Classic
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyStylePreset('paper')}
+                                    className="border border-white/30 px-3 py-3 text-[10px] font-black uppercase tracking-widest hover:border-white hover:bg-white hover:text-black transition-all"
+                                >
+                                    Paper
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyStylePreset('signal')}
+                                    className="border border-white/30 px-3 py-3 text-[10px] font-black uppercase tracking-widest hover:border-white hover:bg-white hover:text-black transition-all"
+                                >
+                                    Signal
+                                </button>
+                            </div>
+                        </div>
                         <div>
                             <label className="block text-xs font-black uppercase tracking-tighter mb-2">Warna QR</label>
                             <div className="flex items-center gap-0 border border-white">
@@ -375,6 +425,10 @@ function QRGenerator() {
             <div className="lg:col-span-2">
                 <div className="card sticky top-28 flex flex-col items-center">
                     <h2 className="text-lg font-black uppercase tracking-widest mb-6 w-full text-left text-white">Pratinjau QR</h2>
+                    <div className="w-full flex items-center gap-2 mb-4 text-[10px] uppercase font-black tracking-widest text-white/50">
+                        <span className={`w-2 h-2 ${generationStatus === 'QR siap digunakan' ? 'bg-green-400' : generationStatus === 'Gagal membuat QR' ? 'bg-red-400' : 'bg-yellow-400 animate-pulse'}`}></span>
+                        {generationStatus}
+                    </div>
                     <div className="bg-white/5 p-8 border-2 border-dashed border-white/20 mb-8 flex items-center justify-center min-h-[300px] w-full">
                         <canvas ref={canvasRef} className="max-w-full h-auto shadow-[0_0_50px_rgba(255,255,255,0.1)]"></canvas>
                     </div>
