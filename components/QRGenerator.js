@@ -97,7 +97,20 @@ function QRGenerator() {
                         context.beginPath();
                         context.roundRect(logoX, logoY, logoSize, logoSize, Math.round(logoSize * 0.14));
                         context.clip();
-                        context.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                        const sourceSize = Math.min(logo.naturalWidth, logo.naturalHeight);
+                        const sourceX = (logo.naturalWidth - sourceSize) / 2;
+                        const sourceY = (logo.naturalHeight - sourceSize) / 2;
+                        context.drawImage(
+                            logo,
+                            sourceX,
+                            sourceY,
+                            sourceSize,
+                            sourceSize,
+                            logoX,
+                            logoY,
+                            logoSize,
+                            logoSize
+                        );
                         context.restore();
                         resolve();
                     };
