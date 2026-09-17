@@ -88,7 +88,7 @@ function QRGenerator() {
                         context.save();
                         roundedArea();
                         context.clip();
-                        context.globalAlpha = 0.5;
+                        context.globalAlpha = 1;
                         context.fillStyle = '#000000';
                         context.fillRect(backgroundX, backgroundY, backgroundSize, backgroundSize);
                         context.restore();
