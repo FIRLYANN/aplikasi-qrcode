@@ -58,9 +58,30 @@ function QRGenerator() {
                         const logoX = (size - logoSize) / 2;
                         const logoY = (size - logoSize) / 2;
                         const padding = Math.max(6, Math.round(size * 0.02));
+                        const backgroundX = Math.max(0, logoX - padding);
+                        const backgroundY = Math.max(0, logoY - padding);
+                        const backgroundSize = Math.min(size - backgroundX, logoSize + padding * 2);
 
-                        context.fillStyle = '#ffffff';
-                        context.fillRect(logoX - padding, logoY - padding, logoSize + padding * 2, logoSize + padding * 2);
+                        context.save();
+                        context.filter = `blur(${Math.max(2, Math.round(size * 0.012))}px)`;
+                        context.drawImage(
+                            qrCanvas,
+                            backgroundX,
+                            backgroundY,
+                            backgroundSize,
+                            backgroundSize,
+                            backgroundX,
+                            backgroundY,
+                            backgroundSize,
+                            backgroundSize
+                        );
+                        context.restore();
+
+                        context.save();
+                        context.globalAlpha = 0.55;
+                        context.fillStyle = bgColor;
+                        context.fillRect(backgroundX, backgroundY, backgroundSize, backgroundSize);
+                        context.restore();
                         context.drawImage(logo, logoX, logoY, logoSize, logoSize);
                         resolve();
                     };
