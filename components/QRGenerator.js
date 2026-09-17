@@ -30,9 +30,11 @@ function QRGenerator() {
                 return;
             }
 
+            const renderScale = 3;
+            const renderSize = size * renderScale;
             const qrCanvas = document.createElement('canvas');
             await window.QRCode.toCanvas(qrCanvas, content, {
-                width: size,
+                width: renderSize,
                 margin: 2,
                 color: {
                     dark: qrColor,
@@ -41,11 +43,15 @@ function QRGenerator() {
                 errorCorrectionLevel: errorLevel
             });
 
-            const textHeight = bottomText.trim() ? Math.max(48, Math.round(size * 0.16)) : 0;
+            const textHeight = bottomText.trim() ? Math.max(48, Math.round(size * 0.16)) * renderScale : 0;
             const canvas = canvasRef.current;
-            canvas.width = size;
-            canvas.height = size + textHeight;
+            canvas.width = renderSize;
+            canvas.height = renderSize + textHeight;
+            canvas.style.width = `${size}px`;
+            canvas.style.height = 'auto';
             const context = canvas.getContext('2d');
+            context.imageSmoothingEnabled = true;
+            context.imageSmoothingQuality = 'high';
             context.fillStyle = bgColor;
             context.fillRect(0, 0, canvas.width, canvas.height);
             context.drawImage(qrCanvas, 0, 0);
@@ -54,13 +60,13 @@ function QRGenerator() {
                 await new Promise((resolve) => {
                     const logo = new Image();
                     logo.onload = () => {
-                        const logoSize = Math.round(size * 0.2);
-                        const logoX = (size - logoSize) / 2;
-                        const logoY = (size - logoSize) / 2;
-                        const padding = Math.max(6, Math.round(size * 0.02));
+                        const logoSize = Math.round(renderSize * 0.2);
+                        const logoX = (renderSize - logoSize) / 2;
+                        const logoY = (renderSize - logoSize) / 2;
+                        const padding = Math.max(6 * renderScale, Math.round(renderSize * 0.02));
                         const backgroundX = Math.max(0, logoX - padding);
                         const backgroundY = Math.max(0, logoY - padding);
-                        const backgroundSize = Math.min(size - backgroundX, logoSize + padding * 2);
+                        const backgroundSize = Math.min(renderSize - backgroundX, logoSize + padding * 2);
                         const cornerRadius = Math.round(backgroundSize * 0.18);
 
                         const roundedArea = () => {
@@ -71,7 +77,7 @@ function QRGenerator() {
                         context.save();
                         roundedArea();
                         context.clip();
-                        context.filter = `blur(${Math.max(3, Math.round(size * 0.018))}px)`;
+                        context.filter = `blur(${Math.max(3 * renderScale, Math.round(renderSize * 0.018))}px)`;
                         context.drawImage(
                             qrCanvas,
                             backgroundX,
@@ -121,12 +127,12 @@ function QRGenerator() {
 
             if (textHeight) {
                 context.fillStyle = bgColor;
-                context.fillRect(0, size, canvas.width, textHeight);
+                context.fillRect(0, renderSize, canvas.width, textHeight);
                 context.fillStyle = qrColor;
-                context.font = `bold ${Math.max(14, Math.round(size * 0.045))}px sans-serif`;
+                context.font = `bold ${Math.max(14 * renderScale, Math.round(renderSize * 0.045))}px sans-serif`;
                 context.textAlign = 'center';
                 context.textBaseline = 'middle';
-                context.fillText(bottomText.trim(), size / 2, size + textHeight / 2, size - 24);
+                context.fillText(bottomText.trim(), renderSize / 2, renderSize + textHeight / 2, renderSize - 24 * renderScale);
             }
         } catch (err) {
             console.error('QR Generation failed:', err);
