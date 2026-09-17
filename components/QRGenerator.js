@@ -11,6 +11,7 @@ function QRGenerator() {
     const [logoUrl, setLogoUrl] = React.useState('');
     const [bottomText, setBottomText] = React.useState('');
     const canvasRef = React.useRef(null);
+    const logoInputRef = React.useRef(null);
 
     const generateQR = React.useCallback(async () => {
         try {
@@ -239,6 +240,7 @@ function QRGenerator() {
                         <div>
                             <label className="block text-xs font-black uppercase tracking-tighter mb-2">Logo Tengah</label>
                             <input
+                                ref={logoInputRef}
                                 type="file"
                                 accept="image/*"
                                 onChange={(e) => {
@@ -247,6 +249,19 @@ function QRGenerator() {
                                 }}
                                 className="input-field text-xs"
                             />
+                            {logoUrl && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setLogoUrl('');
+                                        if (logoInputRef.current) logoInputRef.current.value = '';
+                                    }}
+                                    className="w-full btn-secondary mt-3 text-xs uppercase tracking-widest"
+                                >
+                                    <div className="icon-trash-2"></div>
+                                    Hapus Logo
+                                </button>
+                            )}
                         </div>
                         <div className="col-span-2">
                             <label className="block text-xs font-black uppercase tracking-tighter mb-2">Bottom Text</label>
