@@ -61,9 +61,17 @@ function QRGenerator() {
                         const backgroundX = Math.max(0, logoX - padding);
                         const backgroundY = Math.max(0, logoY - padding);
                         const backgroundSize = Math.min(size - backgroundX, logoSize + padding * 2);
+                        const cornerRadius = Math.round(backgroundSize * 0.18);
+
+                        const roundedArea = () => {
+                            context.beginPath();
+                            context.roundRect(backgroundX, backgroundY, backgroundSize, backgroundSize, cornerRadius);
+                        };
 
                         context.save();
-                        context.filter = `blur(${Math.max(2, Math.round(size * 0.012))}px)`;
+                        roundedArea();
+                        context.clip();
+                        context.filter = `blur(${Math.max(3, Math.round(size * 0.018))}px)`;
                         context.drawImage(
                             qrCanvas,
                             backgroundX,
@@ -78,11 +86,19 @@ function QRGenerator() {
                         context.restore();
 
                         context.save();
-                        context.globalAlpha = 0.55;
+                        roundedArea();
+                        context.clip();
+                        context.globalAlpha = 0.38;
                         context.fillStyle = bgColor;
                         context.fillRect(backgroundX, backgroundY, backgroundSize, backgroundSize);
                         context.restore();
+
+                        context.save();
+                        context.beginPath();
+                        context.roundRect(logoX, logoY, logoSize, logoSize, Math.round(logoSize * 0.14));
+                        context.clip();
                         context.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                        context.restore();
                         resolve();
                     };
                     logo.onerror = resolve;
