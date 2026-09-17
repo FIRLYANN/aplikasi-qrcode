@@ -9,7 +9,9 @@ function QRGenerator() {
     const [wifiPass, setWifiPass] = React.useState('');
     const [wifiSec, setWifiSec] = React.useState('WPA');
     const [logoUrl, setLogoUrl] = React.useState('');
+    const [logoSizePercent, setLogoSizePercent] = React.useState(20);
     const [bottomText, setBottomText] = React.useState('');
+    const [copyStatus, setCopyStatus] = React.useState('');
     const canvasRef = React.useRef(null);
     const logoInputRef = React.useRef(null);
 
@@ -60,7 +62,7 @@ function QRGenerator() {
                 await new Promise((resolve) => {
                     const logo = new Image();
                     logo.onload = () => {
-                        const logoSize = Math.round(renderSize * 0.2);
+                        const logoSize = Math.round(renderSize * (logoSizePercent / 100));
                         const logoX = (renderSize - logoSize) / 2;
                         const logoY = (renderSize - logoSize) / 2;
                         const padding = Math.max(6 * renderScale, Math.round(renderSize * 0.02));
@@ -137,7 +139,7 @@ function QRGenerator() {
         } catch (err) {
             console.error('QR Generation failed:', err);
         }
-    }, [inputValue, qrColor, bgColor, size, errorLevel, type, wifiName, wifiPass, wifiSec, logoUrl, bottomText]);
+    }, [inputValue, qrColor, bgColor, size, errorLevel, type, wifiName, wifiPass, wifiSec, logoUrl, logoSizePercent, bottomText]);
 
     React.useEffect(() => {
         generateQR();
@@ -150,6 +152,30 @@ function QRGenerator() {
         link.download = `qr-code-${Date.now()}.png`;
         link.href = url;
         link.click();
+    };
+
+    const copyQR = async () => {
+        try {
+            const blob = await new Promise((resolve) => canvasRef.current.toBlob(resolve, 'image/png'));
+            await navigator.clipboard.write([
+                new ClipboardItem({ 'image/png': blob })
+            ]);
+            setCopyStatus('QR tersalin');
+        } catch (err) {
+            setCopyStatus('Gagal menyalin');
+        }
+        window.setTimeout(() => setCopyStatus(''), 2200);
+    };
+
+    const resetDesign = () => {
+        setQrColor('#ffffff');
+        setBgColor('#000000');
+        setSize(300);
+        setErrorLevel('M');
+        setLogoSizePercent(20);
+        setBottomText('');
+        setLogoUrl('');
+        if (logoInputRef.current) logoInputRef.current.value = '';
     };
 
     return (
@@ -294,6 +320,18 @@ function QRGenerator() {
                             </select>
                         </div>
                         <div>
+                            <label className="block text-xs font-black uppercase tracking-tighter mb-2">Ukuran Logo ({logoSizePercent}%)</label>
+                            <input
+                                type="range"
+                                min="10"
+                                max="30"
+                                step="1"
+                                value={logoSizePercent}
+                                onChange={(e) => setLogoSizePercent(parseInt(e.target.value))}
+                                className="w-full h-1 bg-white appearance-none cursor-pointer accent-white"
+                            />
+                        </div>
+                        <div>
                             <label className="block text-xs font-black uppercase tracking-tighter mb-2">Logo Tengah</label>
                             <input
                                 ref={logoInputRef}
@@ -350,6 +388,13 @@ function QRGenerator() {
                             Unduh (.png)
                         </button>
                         <button
+                            onClick={copyQR}
+                            className="w-full btn-secondary uppercase tracking-widest text-xs"
+                        >
+                            <div className="icon-copy"></div>
+                            {copyStatus || 'Salin ke Clipboard'}
+                        </button>
+                        <button
                             onClick={() => {
                                 window.print();
                             }}
@@ -357,6 +402,15 @@ function QRGenerator() {
                         >
                             <div className="icon-printer"></div>
                             Cetak Sekarang
+                        </button>
+                        <button
+                            onClick={resetDesign}
+                            className="w-full text-[10px] uppercase font-black tracking-widest text-white/40 hover:text-white transition-colors py-2"
+                        >
+                            <span className="inline-flex items-center gap-2">
+                                <div className="icon-rotate-ccw"></div>
+                                Reset Desain
+                            </span>
                         </button>
                     </div>
                     
