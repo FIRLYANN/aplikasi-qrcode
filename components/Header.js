@@ -11,15 +11,9 @@ function Header() {
                     </span>
                 </div>
                 <nav className="hidden md:flex items-center gap-8">
-                    <a href="#" className="text-xs font-bold uppercase tracking-widest text-white hover:underline transition-colors">Beranda</a>
+                    <a href="#top" className="text-xs font-bold uppercase tracking-widest text-white hover:underline transition-colors">Beranda</a>
                     <a href="#features" className="text-xs font-bold uppercase tracking-widest text-white hover:underline transition-colors">Fitur</a>
-                    <a href="#templates" className="text-xs font-bold uppercase tracking-widest text-white hover:underline transition-colors">Templat</a>
                 </nav>
-                <div>
-                    <button className="btn-primary text-sm px-5 py-2">
-                        Mulai Gratis
-                    </button>
-                </div>
             </div>
         </header>
     );

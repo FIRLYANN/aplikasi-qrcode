@@ -12,12 +12,6 @@ function Footer() {
                         </span>
                     </div>
                     
-                    <div className="flex justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-white/50">
-                        <a href="#" className="hover:text-white transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-white transition-colors">Terms</a>
-                        <a href="#" className="hover:text-white transition-colors">Contact</a>
-                    </div>
-                    
                     <div className="text-center md:text-right text-[10px] font-black uppercase tracking-widest text-white/20">
                         &copy; 2026 QRGen Pro. Dark Brutalist Design.
                     </div>

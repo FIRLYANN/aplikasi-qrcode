@@ -41,7 +41,7 @@ class ErrorBoundary extends React.Component {
 function App() {
   try {
     return (
-      <div className="min-h-screen flex flex-col" data-name="app" data-file="app.js">
+      <div id="top" className="min-h-screen flex flex-col" data-name="app" data-file="app.js">
         <Header />
         <main className="flex-grow container mx-auto px-4 py-12">
             <div className="max-w-6xl mx-auto">
@@ -56,7 +56,7 @@ function App() {
                 
                 <QRGenerator />
                 
-                <section className="mt-24 grid md:grid-cols-3 gap-8">
+                <section id="features" className="mt-24 grid md:grid-cols-3 gap-8">
                     <div className="card text-center" data-name="feature-1">
                         <div className="w-16 h-16 border-b border-white flex items-center justify-center mx-auto mb-6">
                             <div className="icon-zap text-3xl text-white"></div>
