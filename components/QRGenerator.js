@@ -3,6 +3,7 @@ function QRGenerator() {
     const [qrColor, setQrColor] = React.useState('#ffffff');
     const [bgColor, setBgColor] = React.useState('#000000');
     const [size, setSize] = React.useState(300);
+    const [margin, setMargin] = React.useState(2);
     const [errorLevel, setErrorLevel] = React.useState('M');
     const [type, setType] = React.useState('text');
     const [wifiName, setWifiName] = React.useState('');
@@ -28,6 +29,11 @@ function QRGenerator() {
             }
 
             if (!content) {
+                const emptyCanvas = canvasRef.current;
+                const emptyContext = emptyCanvas.getContext('2d');
+                emptyCanvas.width = 0;
+                emptyCanvas.height = 0;
+                emptyContext.clearRect(0, 0, 0, 0);
                 setGenerationStatus('Masukkan konten untuk mulai');
                 return;
             }
@@ -42,7 +48,7 @@ function QRGenerator() {
             const qrCanvas = document.createElement('canvas');
             await window.QRCode.toCanvas(qrCanvas, content, {
                 width: renderSize,
-                margin: 2,
+                margin,
                 color: {
                     dark: qrColor,
                     light: bgColor
@@ -146,7 +152,7 @@ function QRGenerator() {
             setGenerationStatus('Gagal membuat QR');
             console.error('QR Generation failed:', err);
         }
-    }, [inputValue, qrColor, bgColor, size, errorLevel, type, wifiName, wifiPass, wifiSec, logoUrl, logoSizePercent, bottomText]);
+    }, [inputValue, qrColor, bgColor, size, margin, errorLevel, type, wifiName, wifiPass, wifiSec, logoUrl, logoSizePercent, bottomText]);
 
     React.useEffect(() => {
         generateQR();
@@ -178,11 +184,19 @@ function QRGenerator() {
         setQrColor('#ffffff');
         setBgColor('#000000');
         setSize(300);
+        setMargin(2);
         setErrorLevel('M');
         setLogoSizePercent(20);
         setBottomText('');
         setLogoUrl('');
         if (logoInputRef.current) logoInputRef.current.value = '';
+    };
+
+    const clearContent = () => {
+        setInputValue('');
+        setWifiName('');
+        setWifiPass('');
+        setBottomText('');
     };
 
     const applyStylePreset = (preset) => {
@@ -275,6 +289,16 @@ function QRGenerator() {
                                 </div>
                             </div>
                         )}
+                        <button
+                            type="button"
+                            onClick={clearContent}
+                            className="text-[10px] uppercase font-black tracking-widest text-white/40 hover:text-white transition-colors"
+                        >
+                            <span className="inline-flex items-center gap-2">
+                                <div className="icon-eraser"></div>
+                                Bersihkan Konten
+                            </span>
+                        </button>
                     </div>
                 </div>
 
@@ -355,6 +379,21 @@ function QRGenerator() {
                                 onChange={(e) => setSize(parseInt(e.target.value))}
                                 className="w-full h-1 bg-white appearance-none cursor-pointer accent-white"
                             />
+                        </div>
+                        <div className="col-span-2">
+                            <label className="block text-xs font-black uppercase tracking-tighter mb-2">Quiet Zone ({margin})</label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="8"
+                                step="1"
+                                value={margin}
+                                onChange={(e) => setMargin(parseInt(e.target.value))}
+                                className="w-full h-1 bg-white appearance-none cursor-pointer accent-white"
+                            />
+                            <p className="mt-2 text-[10px] uppercase font-bold tracking-widest text-white/30">
+                                Ruang kosong di sekeliling QR untuk membantu pemindaian.
+                            </p>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-[var(--secondary-color)] mb-2">Level Koreksi</label>
