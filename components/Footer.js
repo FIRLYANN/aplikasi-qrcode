@@ -11,6 +11,16 @@ function Footer() {
                             QRGen Pro
                         </span>
                     </div>
+
+                    <a
+                        href="https://www.firlyann.my.id/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors"
+                    >
+                        Website Developer
+                        <div className="icon-external-link text-xs"></div>
+                    </a>
                     
                     <div className="text-center md:text-right text-[10px] font-black uppercase tracking-widest text-white/20">
                         &copy; 2026 QRGen Pro. Dark Brutalist Design.
